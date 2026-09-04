@@ -6,7 +6,7 @@ from telebot.types import WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
 import json
 
 # BotFather'dan olingan math1010_bot tokeningizni yozing
-TOKEN = "SIZNING_BOT_TOKENINGIZ"
+TOKEN = "8978768448:AAEhkeTQMTktCnq8K6yWAQIBtw1QQ1zp8YY"
 bot = telebot.TeleBot(TOKEN)
 
 # GitHub Pages'dan olingan index.html havolasini yozing
