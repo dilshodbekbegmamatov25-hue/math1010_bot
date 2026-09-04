@@ -1,13 +1,16 @@
+import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 import telebot
 from telebot.types import WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
 import json
 
-# @BotFather'dan math1010_bot uchun olgan tokeningizni yozing
-TOKEN = "8978768448:AAEhkeTQMTktCnq8K6yWAQIBtw1QQ1zp8YY"
+# BotFather'dan olingan math1010_bot tokeningizni yozing
+TOKEN = "SIZNING_BOT_TOKENINGIZ"
 bot = telebot.TeleBot(TOKEN)
 
 # GitHub Pages'dan olingan index.html havolasini yozing
-WEB_APP_URL = "https://dilshodbekbegmamatov25-hue.github.io/math1010_bot/index.html"
+WEB_APP_URL = "https://dilshodbekbegmamatov25-hue.github.io/math1010_bot/"
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -27,6 +30,21 @@ def receive_webapp_data(message):
     score = data.get('score', 0)
     bot.send_message(message.chat.id, f"Test yakunlandi! Sizning umumiy ballingiz: {score} / 10 🎯")
 
+# --- Render port talabini qondirish uchun kichik veb-server ---
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(('0.0.0.0', port), SimpleHandler)
+    server.serve_forever()
+
 if __name__ == '__main__':
-    print("Bot ishga tushdi...")
+    # Veb-serverni alohida oqimda (thread) ishga tushiramiz
+    threading.Thread(target=run_web, daemon=True).start()
+    
+    print("Bot va veb-server ishga tushdi...")
     bot.infinity_polling()
