@@ -60,7 +60,6 @@
 </head>
 <body>
 
-<!-- Ism familiya kiritish oynasi -->
 <div class="container" id="name-container">
     <div class="form-card">
         <h2>Ism va familiyangizni kiriting:</h2>
@@ -69,7 +68,6 @@
     </div>
 </div>
 
-<!-- Test savollari oynasi -->
 <div class="container" id="quiz-container">
     <div id="question-header" style="margin-bottom: 10px; font-weight: bold;">Savol <span id="current-q">1</span> / 10</div>
     <div class="question-card">
@@ -78,7 +76,6 @@
     </div>
 </div>
 
-<!-- Natija oynasi -->
 <div class="container" id="result">
     <div class="form-card" style="text-align: center;">
         <h2>Test yakunlandi! 🎉</h2>
@@ -161,11 +158,32 @@
     }
 
     function closeApp() {
-        let data = JSON.stringify({ name: userName, score: score });
-        if (tg.sendData) {
-            tg.sendData(data);
+        let userId = tg.initDataUnsafe?.user?.id;
+        if (!userId) {
+            alert("Foydalanuvchi ma'lumotlarini aniqlab bo'lmadi!");
+            tg.close();
+            return;
         }
-        tg.close();
+
+        let payload = {
+            user_id: userId,
+            name: userName,
+            score: score
+        };
+
+        // Renderdagi veb-servisingiz manzili
+        fetch('https://math1010-bot.onrender.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            tg.close();
+        })
+        .catch(error => {
+            console.error('Xatolik:', error);
+            tg.close();
+        });
     }
 </script>
 
