@@ -3,11 +3,11 @@ from telebot.types import WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
 import json
 
 # @BotFather'dan math1010_bot uchun olgan tokeningizni yozing
-TOKEN = "SIZNING_BOT_TOKENINGIZ"
+TOKEN = "8978768448:AAEhkeTQMTktCnq8K6yWAQIBtw1QQ1zp8YY"
 bot = telebot.TeleBot(TOKEN)
 
 # GitHub Pages'dan olingan index.html havolasini yozing
-WEB_APP_URL = "https://username.github.io/repo-nomi/index.html"
+WEB_APP_URL = "https://dilshodbekbegmamatov25-hue.github.io/math1010_bot/index.html"
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
