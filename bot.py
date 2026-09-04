@@ -22,23 +22,39 @@ def send_welcome(message):
         reply_markup=markup
     )
 
-@bot.message_handler(content_types=['web_app_data'])
-def receive_webapp_data(message):
-    data = json.loads(message.web_app_data.data)
-    name = data.get('name', 'Nomaʼlum')
-    score = data.get('score', 0)
-    
-    bot.send_message(
-        message.chat.id, 
-        f"📊 **Test natijasi:**\n\n👤 Ism: {name}\n🎯 Ball: {score} / 10", 
-        parse_mode="Markdown"
-    )
-
+# Render orqali keladigan natijalarni qabul qilish uchun server
 class SimpleHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"Bot is alive!")
+
+    def do_POST(self):
+        if self.path == '/submit':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                user_id = data.get('user_id')
+                name = data.get('name')
+                score = data.get('score')
+                
+                if user_id:
+                    bot.send_message(
+                        user_id, 
+                        f"📊 **Test natijasi:**\n\n👤 Ism: {name}\n🎯 Ball: {score} / 10", 
+                        parse_mode="Markdown"
+                    )
+                    self.send_response(200)
+                    self.end_headers()
+                    self.wfile.write(b"Success")
+                    return
+            except Exception as e:
+                print("Xatolik:", e)
+        
+        self.send_response(400)
+        self.end_headers()
+        self.wfile.write(b"Bad Request")
 
 def run_web():
     port = int(os.environ.get("PORT", 10000))
