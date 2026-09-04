@@ -113,7 +113,7 @@
     function startQuiz() {
         const inputVal = document.getElementById('user-full-name').value.trim();
         if (!inputVal) {
-            alert("Iltimos,ism va familiyangizni kiriting!");
+            alert("Iltimos, ism va familiyangizni kiriting!");
             return;
         }
         userName = inputVal;
@@ -160,7 +160,7 @@
         document.getElementById('level-desc').innerText = levelText;
     }
 
-   function closeApp() {
+    function closeApp() {
         let data = JSON.stringify({ name: userName, score: score });
         if (tg.sendData) {
             tg.sendData(data);
