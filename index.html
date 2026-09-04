@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematika Daraja testi</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+        .question-card {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button.option-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+        }
+        button.option-btn:hover {
+            opacity: 0.9;
+        }
+        #result {
+            text-align: center;
+            display: none;
+        }
+        h2 { font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="quiz-container">
+    <div id="question-header">Savol <span id="current-q">1</span> / 10</div>
+    <div class="question-card">
+        <h2 id="question-text">Savol yuklanmoqda...</h2>
+        <div id="options-container"></div>
+    </div>
+</div>
+
+<div class="container" id="result">
+    <h2>Test yakunlandi! 🎉</h2>
+    <p>Sizning natijangiz: <span id="score">0</span> / 10</p>
+    <p id="level-desc" style="font-weight: bold; font-size: 18px;"></p>
+    <button class="option-btn" style="text-align: center;" onclick="closeApp()">Natijani yuborish va yopish</button>
+</div>
+
+<script>
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const questions = [
+        { type: "Arifmetika", question: "Hisoblang: 45 + 15 * 2 - 30 / 5", options: ["70", "69", "75", "60"], answer: 1 },
+        { type: "Tenglama", question: "Tenglamani yeching: 3x - 7 = 14", options: ["x = 5", "x = 7", "x = 8", "x = 6"], answer: 1 },
+        { type: "Foiz", question: "200 sonining 25 foizi nechaga teng?", options: ["40", "50", "60", "45"], answer: 1 },
+        { type: "Kasrlar", question: "Hisoblang: 3/4 + 1/2", options: ["4/6", "5/4", "1", "2/3"], answer: 1 },
+        { type: "Daraja va Ildiz", question: "Hisoblang: √144 + 2³", options: ["16", "20", "18", "24"], answer: 1 },
+        { type: "Geometriya", question: "Tomoni 6 sm bo'lgan kvadratning yuzini toping.", options: ["24 sm²", "36 sm²", "12 sm²", "18 sm²"], answer: 1 },
+        { type: "Matnli masala", question: "Avtomobil 60 km/soat tezlik bilan 3 soatda qancha masofa bosib o'tadi?", options: ["150 km", "180 km", "120 km", "200 km"], answer: 1 },
+        { type: "Ketma-ketlik", question: "Keyingi sonni toping: 2, 6, 12, 20, 30, ...", options: ["40", "42", "45", "48"], answer: 1 },
+        { type: "Ehtimollik", question: "Tanga tashlanganda 'gerb' tushish ehtimolligi qanday?", options: ["1", "1/2", "1/4", "0"], answer: 1 },
+        { type: "Mantiqiy", question: "Aka 10 yoshda, uka uning yarmiga teng (5 yosh). Aka 50 yoshga kirganda uka necha yoshda bo'ladi?", options: ["25", "40", "45", "50"], answer: 2 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        if (currentQuestion < questions.length) {
+            let q = questions[currentQuestion];
+            document.getElementById('current-q').innerText = currentQuestion + 1;
+            document.getElementById('question-text').innerText = `(${q.type}) ${q.question}`;
+            
+            let optionsHtml = '';
+            q.options.forEach((opt, index) => {
+                optionsHtml += `<button class="option-btn" onclick="checkAnswer(${index})">${opt}</button>`;
+            });
+            document.getElementById('options-container').innerHTML = optionsHtml;
+        } else {
+            showResult();
+        }
+    }
+
+    function checkAnswer(selectedIndex) {
+        if (selectedIndex === questions[currentQuestion].answer) {
+            score++;
+        }
+        currentQuestion++;
+        loadQuestion();
+    }
+
+    function showResult() {
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('score').innerText = score;
+
+        let levelText = "";
+        if (score <= 4) levelText = "Darajangiz: Boshlang'ich (Qayta o'qish tavsiya etiladi)";
+        else if (score <= 7) levelText = "Darajangiz: O'rta (Yaxshi, lekin harakat qilish kerak)";
+        else levelText = "Darajangiz: Yuqori / Professional! 🏆";
+
+        document.getElementById('level-desc').innerText = levelText;
+    }
+
+    function closeApp() {
+        tg.sendData(JSON.stringify({ score: score }));
+        tg.close();
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
