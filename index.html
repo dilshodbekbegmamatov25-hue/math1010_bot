@@ -160,8 +160,11 @@
         document.getElementById('level-desc').innerText = levelText;
     }
 
-    function closeApp() {
-        tg.sendData(JSON.stringify({ name: userName, score: score }));
+   function closeApp() {
+        let data = JSON.stringify({ name: userName, score: score });
+        if (tg.sendData) {
+            tg.sendData(data);
+        }
         tg.close();
     }
 </script>
