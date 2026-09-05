@@ -60,6 +60,7 @@
 </head>
 <body>
 
+<!-- Ism familiya kiritish oynasi -->
 <div class="container" id="name-container">
     <div class="form-card">
         <h2>Ism va familiyangizni kiriting:</h2>
@@ -68,6 +69,7 @@
     </div>
 </div>
 
+<!-- Test savollari oynasi -->
 <div class="container" id="quiz-container">
     <div id="question-header" style="margin-bottom: 10px; font-weight: bold;">Savol <span id="current-q">1</span> / 10</div>
     <div class="question-card">
@@ -76,6 +78,7 @@
     </div>
 </div>
 
+<!-- Natija oynasi -->
 <div class="container" id="result">
     <div class="form-card" style="text-align: center;">
         <h2>Test yakunlandi! 🎉</h2>
@@ -149,12 +152,11 @@
         document.getElementById('display-name').innerText = userName;
         document.getElementById('score').innerText = score;
 
-        let levelText = "";
-        if (score <= 4) levelText = "Darajangiz: Boshlang'ich";
-        else if (score <= 7) levelText = "Darajangiz: O'rta";
-        else levelText = "Darajangiz: Yuqori / Professional! 🏆";
+        let levelText = "Boshlang'ich";
+        if (score > 7) levelText = "Yuqori / Professional! 🏆";
+        else if (score > 4) levelText = "O'rta";
 
-        document.getElementById('level-desc').innerText = levelText;
+        document.getElementById('level-desc').innerText = `Darajangiz: 🥉 ${levelText}`;
     }
 
     function closeApp() {
@@ -171,7 +173,6 @@
             score: score
         };
 
-        // Renderdagi veb-servisingiz manzili
         fetch('https://math1010-bot.onrender.com/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
