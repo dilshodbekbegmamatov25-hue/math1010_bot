@@ -160,31 +160,17 @@
     }
 
     function closeApp() {
-        let userId = tg.initDataUnsafe?.user?.id;
-        if (!userId) {
-            alert("Foydalanuvchi ma'lumotlarini aniqlab bo'lmadi!");
-            tg.close();
-            return;
-        }
-
-        let payload = {
-            user_id: userId,
+        let payload = JSON.stringify({
             name: userName,
             score: score
-        };
-
-        fetch('https://math1010-bot.onrender.com/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(response => {
-            tg.close();
-        })
-        .catch(error => {
-            console.error('Xatolik:', error);
-            tg.close();
         });
+
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
+            window.Telegram.WebApp.sendData(payload);
+        } else {
+            alert("Natija tayyor: " + userName + ", Ball: " + score + " / 10");
+            window.Telegram.WebApp.close();
+        }
     }
 </script>
 
